@@ -1,0 +1,60 @@
+# .gitignore for web-dea (PHP / XAMPP project)
+# Ignore runtime files, local config, IDE settings, and build artifacts
+
+# Composer / PHP
+/vendor/
+/composer.phar
+/.phpunit.result.cache
+
+# Node/npm
+/node_modules/
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
+
+# Environment / local config
+.env
+.env.*
+.env.local
+config/config.php
+app/auth.php
+
+# Runtime uploads and caches
+/public/uploads/
+uploads/
+/tmp/
+/temp/
+/storage/
+.cache/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Build / distribution
+/dist/
+/build/
+
+# Misc
+*.sql
+*.sql.gz
+*.sqlite
+*.sqlite3
+
+# Ignore user secrets if present
+*.pem
+*.key
+
+# Allow explicitly tracked files (if any) by negating patterns below
+# e.g., to keep a sample config tracked, you can add:
+# !config/config.example.php
