@@ -1,8 +1,9 @@
 <?php include __DIR__ . '/_header.php'; ?>
 
-<div class="max-w-2xl mx-auto px-4 py-10">
+<div class="max-w-2xl mx-auto px-4  mt-20
+">
   <h2 class="text-2xl font-semibold mb-2">Daftar Akun</h2>
-  <p class="text-sm text-gray-600 mb-6">Buat akun untuk bisa mengirim artikel atau komentar.</p>
+  <p class="text-sm text-gray-600 mb-6">Buat akun untuk bisa mengirim artikel atau mengelola portofolio.</p>
 
   <form action="../app/process_register.php" method="POST" class="bg-white p-6 rounded-lg shadow space-y-4">
     <div>

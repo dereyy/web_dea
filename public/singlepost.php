@@ -57,8 +57,7 @@ include __DIR__ . '/_header.php';
     <img
       src="<?= e($article['featured_image']) ?>"
       alt="<?= e($article['title']) ?>"
-      class="w-full h-72 object-cover rounded-lg mb-6 shadow"
-    >
+      class="w-full h-72 object-cover rounded-lg mb-6 shadow">
   <?php endif; ?>
 
   <!-- Isi artikel -->
@@ -67,72 +66,7 @@ include __DIR__ . '/_header.php';
   </div>
 
   <!-- Komentar Section (form + daftar komentar) -->
-  <?php
-    // ambil komentar untuk article ini (yang disetujui)
-    $article_id = (int)$article['id'];
-    $stmtC = $conn->prepare("
-      SELECT c.id, c.body, c.created_at, c.user_id, u.name AS user_name
-      FROM comments c
-      LEFT JOIN users u ON u.id = c.user_id
-      WHERE c.article_id = ? AND c.is_approved = 1
-      ORDER BY c.created_at ASC
-    ");
-    $stmtC->bind_param("i", $article_id);
-    $stmtC->execute();
-    $comments = $stmtC->get_result()->fetch_all(MYSQLI_ASSOC);
-    $stmtC->close();
-  ?>
-
-  <section id="comments" class="mt-10">
-    <h3 class="text-lg font-semibold mb-3">Komentar (<?= e(count($comments)) ?>)</h3>
-
-    <!-- Form komentar -->
-    <?php if (!empty($_SESSION['user_id'])): ?>
-      <form method="post" action="process_comment.php" class="mb-6">
-        <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">
-        <input type="hidden" name="article_id" value="<?= e($article_id) ?>">
-        <input type="hidden" name="slug" value="<?= e($article['slug']) ?>">
-        <textarea name="body" rows="3" class="w-full border rounded p-3" placeholder="Tulis komentar..." required></textarea>
-        <div class="mt-2 flex items-center justify-between">
-          <div class="text-sm text-gray-500">Jaga etika saat berkomentar ya 😊.</div>
-          <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">Kirim</button>
-        </div>
-      </form>
-    <?php else: ?>
-      <div class="mb-6 text-sm text-gray-600">
-        <a href="login.php" class="text-indigo-600 hover:underline">Login</a> untuk menulis komentar.
-      </div>
-    <?php endif; ?>
-
-    <!-- List komentar -->
-    <div class="space-y-4">
-      <?php if (empty($comments)): ?>
-        <div class="text-gray-600">Belum ada komentar. Jadilah yang pertama!</div>
-      <?php else: ?>
-        <?php foreach ($comments as $c): ?>
-          <div class="bg-white p-4 rounded shadow-sm">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="text-sm font-medium"><?= e($c['user_name'] ?? 'Guest') ?></div>
-                <div class="text-xs text-gray-400"><?= e(date('d M Y H:i', strtotime($c['created_at']))) ?></div>
-              </div>
-
-              <?php if (!empty($_SESSION['user_id']) && $_SESSION['user_id'] == $c['user_id']): ?>
-                <!-- tombol hapus (pemilik komentar) -->
-                <form method="post" action="process_comment.php" class="ml-4">
-                  <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">
-                  <input type="hidden" name="delete_id" value="<?= e($c['id']) ?>">
-                  <button type="submit" name="action" value="delete" class="text-sm text-red-500">Hapus</button>
-                </form>
-              <?php endif; ?>
-            </div>
-
-            <div class="mt-3 text-gray-700 whitespace-pre-wrap"><?= e($c['body']) ?></div>
-          </div>
-        <?php endforeach; ?>
-      <?php endif; ?>
-    </div>
-  </section>
+  <!-- Komentar dinonaktifkan: fitur komentar telah dihapus -->
 
   <!-- Tombol kembali -->
   <div class="mt-8">

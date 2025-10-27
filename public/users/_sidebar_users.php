@@ -34,13 +34,13 @@ $stmt->close();
 <!-- judul sidebar -->
 <aside class="w-64 bg-white border-r hidden md:block">
   <div class="p-6">
-    <a href="../users/users_dashboard.php" class="text-lg font-semibold text-indigo-600">Kampus Epic</a>
+    <a href="../users/users_dashboard.php" class="text-lg font-semibold text-indigo-600">Portofolio Dea</a>
   </div>
   <!-- pilihan sidebar -->
   <nav class="px-4 py-6 space-y-2">
     <a href="users_dashboard.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= basename($_SERVER['PHP_SELF']) === 'users_dashboard' ? 'bg-indigo-50 font-semibold' : '' ?>">Dashboard</a>
     <a href="likes.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= basename($_SERVER['PHP_SELF']) === 'likes.php' ? 'bg-indigo-50 font-semibold' : '' ?>">Disukai</a>
-    <a href="comments.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= basename($_SERVER['PHP_SELF']) === 'comments.php' ? 'bg-indigo-50 font-semibold' : '' ?>">Dikomentar</a>
+    <!-- link komentar dihapus karena fitur komentar dinonaktifkan -->
     <a href="../logout.php" class="block px-3 py-2 rounded hover:bg-indigo-50 text-red-600">Logout</a>
   </nav>
   <!-- user / admin profile -->

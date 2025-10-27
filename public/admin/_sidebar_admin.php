@@ -9,13 +9,13 @@ $user_role = $_SESSION['user_role'] ?? 'admin';
 <aside class="w-64 bg-white border-r hidden md:block">
   <div class="p-6">
     <a href="<?= $base ?>/admin/admin_dashboard.php" class="text-lg font-semibold text-indigo-600 flex items-center gap-2">
-      Kampus Epic — Admin
+      Portofolio Dea — Admin
     </a>
   </div>
 
   <nav class="px-4 py-6 space-y-2 text-gray-700">
     <a href="<?= $base ?>/admin/admin_dashboard.php"
-       class="flex items-center gap-3 px-3 py-2 rounded hover:bg-indigo-50 <?= basename($_SERVER['PHP_SELF']) === 'admin_dashboard.php' ? 'bg-indigo-50 font-semibold' : '' ?>">
+      class="flex items-center gap-3 px-3 py-2 rounded hover:bg-indigo-50 <?= basename($_SERVER['PHP_SELF']) === 'admin_dashboard.php' ? 'bg-indigo-50 font-semibold' : '' ?>">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8" />
       </svg>
@@ -45,12 +45,12 @@ $user_role = $_SESSION['user_role'] ?? 'admin';
   </nav>
 
   <!-- Profile Logged in -->
-   <div class="p-4 border-t text-sm text-gray-600">
+  <div class="p-4 border-t text-sm text-gray-600">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
         <!-- dummy avatar -->
         <img src="<?= $avatar_url ?>" alt="avatar"
-             class="w-8 h-8 rounded-full object-cover border">
+          class="w-8 h-8 rounded-full object-cover border">
 
         <div>
           <div class="text-xs text-gray-500 mb-1">Signed in as</div>
@@ -59,11 +59,11 @@ $user_role = $_SESSION['user_role'] ?? 'admin';
         </div>
       </div>
 
-      
-       <!-- icon edit profile -->
+
+      <!-- icon edit profile -->
       <a href="<?= $base ?>/admin/profile.php" title="Edit Profile"
-         class="inline-flex items-center justify-center w-8 h-8 rounded hover:bg-gray-100">
-         <img src="https://cdn-icons-png.flaticon.com/128/484/484562.png"
+        class="inline-flex items-center justify-center w-8 h-8 rounded hover:bg-gray-100">
+        <img src="https://cdn-icons-png.flaticon.com/128/484/484562.png"
           alt="Edit Profile"
           class="w-5 h-5" />
       </a>

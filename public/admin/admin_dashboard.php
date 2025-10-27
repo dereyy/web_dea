@@ -20,9 +20,9 @@ include __DIR__ . '/_sidebar_admin.php';
       </div>
 
       <div class="bg-white rounded-lg p-6 shadow">
-        <h3 class="font-semibold">Kelola Komentar</h3>
-        <p class="text-sm text-gray-500 mt-2">Review pesan atau komentar dari pengunjung.</p>
-        <a href="#" class="text-indigo-600 mt-3 inline-block">Lihat komentar →</a>
+        <h3 class="font-semibold">Kelola Pengguna</h3>
+        <p class="text-sm text-gray-500 mt-2">Lihat dan atur akun pengguna serta peran.</p>
+        <a href="role_management.php" class="text-indigo-600 mt-3 inline-block">Buka manajemen pengguna →</a>
       </div>
     </div>
   </div>

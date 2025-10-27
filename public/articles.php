@@ -72,7 +72,7 @@ function build_page_url($p)
 $articleIds = array_map(fn($r) => (int)$r['id'], $articles);
 $likesCount = [];
 $userLiked = [];
-$commentsCount = [];
+// comments feature removed: tidak lagi mengambil jumlah komentar
 
 if (!empty($articleIds)) {
   $in = implode(',', $articleIds); // aman karena cast int
@@ -85,13 +85,7 @@ if (!empty($articleIds)) {
   }
   mysqli_free_result($res);
 
-  // comments count (asumsi ada tabel comments dengan article_id)
-  $sqlComments = "SELECT article_id, COUNT(*) AS cnt FROM comments WHERE article_id IN ($in) GROUP BY article_id";
-  $resC = mysqli_query($conn, $sqlComments);
-  while ($r = mysqli_fetch_assoc($resC)) {
-    $commentsCount[(int)$r['article_id']] = (int)$r['cnt'];
-  }
-  mysqli_free_result($resC);
+  // komentar dinonaktifkan: tidak mengambil jumlah komentar
 
   // jika user login, ambil liked article id yang user miliki
   $currentUserId = $_SESSION['user_id'] ?? null;
@@ -113,7 +107,8 @@ include __DIR__ . '/_header.php';
 ?>
 
 <!-- Search + header -->
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4
+ mt-20">
   <h2 class="text-2xl font-semibold text-gray-800">Portofolio</h2>
 
   <form method="GET" action="articles.php" class="flex gap-2 w-full md:w-auto">
@@ -158,7 +153,7 @@ include __DIR__ . '/_header.php';
           <?php
           $aid = (int)$a['id'];
           $countLikes = $likesCount[$aid] ?? 0;
-          $countComments = $commentsCount[$aid] ?? 0;
+          $countComments = 0; // komentar dinonaktifkan
           $hasLiked = !empty($userLiked[$aid]);
           ?>
 
@@ -187,13 +182,7 @@ include __DIR__ . '/_header.php';
                 </a>
               <?php endif; ?>
 
-              <!-- comment icon - link ke singlepost (komentar ada di singlepost) -->
-              <a href="singlepost.php?slug=<?= urlencode($a['slug']) ?>" class="flex items-center text-sm text-gray-600 hover:text-indigo-600">
-                <svg class="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h10l4 4z" />
-                </svg>
-                <span><?= e($countComments) ?></span>
-              </a>
+              <!-- komentar dinonaktifkan: ikon komentar dihapus -->
             </div>
 
             <!-- author or date (optional small text) -->
