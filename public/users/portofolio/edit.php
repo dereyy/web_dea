@@ -12,7 +12,7 @@ if (!$id) {
 }
 
 // ambil data hanya milik user ini
-$stmt = mysqli_prepare($conn, "SELECT id, title, content, featured_image FROM articles WHERE id = ? AND author_id = ?");
+$stmt = mysqli_prepare($conn, "SELECT id, title, content, featured_image FROM portofolio WHERE id = ? AND author_id = ?");
 $uid = current_user_id();
 mysqli_stmt_bind_param($stmt, "ii", $id, $uid);
 mysqli_stmt_execute($stmt);
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        $stmt = mysqli_prepare($conn, "UPDATE articles SET title = ?, content = ?, featured_image = ?, updated_at = NOW() WHERE id = ? AND author_id = ?");
+        $stmt = mysqli_prepare($conn, "UPDATE portofolio SET title = ?, content = ?, featured_image = ?, updated_at = NOW() WHERE id = ? AND author_id = ?");
         mysqli_stmt_bind_param($stmt, "sssii", $title, $content, $article['featured_image'], $id, $uid);
         $ok = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);

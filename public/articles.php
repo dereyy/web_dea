@@ -24,7 +24,7 @@ if ($searchQuery !== '') {
 }
 
 // count total
-$sqlCount = "SELECT COUNT(*) AS cnt FROM articles $whereSql";
+$sqlCount = "SELECT COUNT(*) AS cnt FROM portofolio $whereSql";
 $stmt = mysqli_prepare($conn, $sqlCount);
 if ($whereSql) mysqli_stmt_bind_param($stmt, $types, ...$params);
 mysqli_stmt_execute($stmt);
@@ -36,12 +36,12 @@ mysqli_stmt_close($stmt);
 $totalPages = (int) max(1, ceil($totalItems / $perPage));
 
 // fetch articles with limit
-$sql = "SELECT a.id, a.title, a.slug, a.featured_image, a.content, a.created_at, u.name AS author
-        FROM articles a
-        LEFT JOIN users u ON a.author_id = u.id
-        $whereSql
-        ORDER BY a.created_at DESC
-        LIMIT ? OFFSET ?";
+$sql = "SELECT p.id, p.title, p.slug, p.featured_image, p.content, p.created_at, u.name AS author
+  FROM portofolio p
+  LEFT JOIN users u ON p.author_id = u.id
+  $whereSql
+  ORDER BY p.created_at DESC
+  LIMIT ? OFFSET ?";
 
 $stmt = mysqli_prepare($conn, $sql);
 
@@ -78,10 +78,10 @@ if (!empty($articleIds)) {
   $in = implode(',', $articleIds); // aman karena cast int
 
   // likes count
-  $sqlCounts = "SELECT article_id, COUNT(*) AS cnt FROM likes WHERE article_id IN ($in) GROUP BY article_id";
+  $sqlCounts = "SELECT portofolio_id AS pid, COUNT(*) AS cnt FROM likes WHERE portofolio_id IN ($in) GROUP BY portofolio_id";
   $res = mysqli_query($conn, $sqlCounts);
   while ($row = mysqli_fetch_assoc($res)) {
-    $likesCount[(int)$row['article_id']] = (int)$row['cnt'];
+    $likesCount[(int)$row['pid']] = (int)$row['cnt'];
   }
   mysqli_free_result($res);
 
@@ -90,13 +90,13 @@ if (!empty($articleIds)) {
   // jika user login, ambil liked article id yang user miliki
   $currentUserId = $_SESSION['user_id'] ?? null;
   if ($currentUserId) {
-    $sqlUserLikes = "SELECT article_id FROM likes WHERE user_id = ? AND article_id IN ($in)";
+    $sqlUserLikes = "SELECT portofolio_id AS pid FROM likes WHERE user_id = ? AND portofolio_id IN ($in)";
     $stmtL = mysqli_prepare($conn, $sqlUserLikes);
     mysqli_stmt_bind_param($stmtL, 'i', $currentUserId);
     mysqli_stmt_execute($stmtL);
     $res2 = mysqli_stmt_get_result($stmtL);
     while ($rl = mysqli_fetch_assoc($res2)) {
-      $userLiked[(int)$rl['article_id']] = true;
+      $userLiked[(int)$rl['pid']] = true;
     }
     mysqli_stmt_close($stmtL);
   }

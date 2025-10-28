@@ -15,12 +15,12 @@ $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
 $whereSql = '';
 $like = '';
 if ($searchQuery !== '') {
-  $whereSql = "WHERE (a.title LIKE ? OR a.content LIKE ?)";
+  $whereSql = "WHERE (p.title LIKE ? OR p.content LIKE ?)";
   $like = '%' . $searchQuery . '%';
 }
 
 // COUNT total (dengan search)
-$sqlCount = "SELECT COUNT(*) AS cnt FROM articles a $whereSql";
+$sqlCount = "SELECT COUNT(*) AS cnt FROM portofolio p $whereSql";
 $stmtCount = mysqli_prepare($conn, $sqlCount);
 if ($searchQuery !== '') {
   mysqli_stmt_bind_param($stmtCount, 'ss', $like, $like);
@@ -34,12 +34,12 @@ mysqli_stmt_close($stmtCount);
 $totalPages = (int) ceil(max(1, $total) / $perPage);
 
 // SELECT data (dengan search + limit)
-$sql = "SELECT a.id, a.title, a.slug, a.featured_image, a.created_at, u.name AS author
-        FROM articles a
-        LEFT JOIN users u ON a.author_id = u.id
-        $whereSql
-        ORDER BY a.created_at DESC
-        LIMIT ? OFFSET ?";
+$sql = "SELECT p.id, p.title, p.slug, p.featured_image, p.created_at, u.name AS author
+  FROM portofolio p
+  LEFT JOIN users u ON p.author_id = u.id
+  $whereSql
+  ORDER BY p.created_at DESC
+  LIMIT ? OFFSET ?";
 
 $stmt = mysqli_prepare($conn, $sql);
 if ($searchQuery !== '') {
@@ -99,7 +99,8 @@ include __DIR__ . '/../_sidebar_admin.php';
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <?php $no = $offset + 1; foreach ($articles as $a): ?>
+            <?php $no = $offset + 1;
+            foreach ($articles as $a): ?>
               <tr class="hover:bg-gray-50">
                 <td class="px-4 py-3 text-sm text-gray-600 align-top"><?= $no++ ?></td>
 
@@ -123,8 +124,8 @@ include __DIR__ . '/../_sidebar_admin.php';
                   <div class="inline-flex items-center gap-2">
                     <!-- edit -->
                     <a href="edit.php?id=<?= $a['id'] ?>" class="text-indigo-600 text-sm px-2 py-1 rounded hover:bg-indigo-50">
-                      <img src="https://cdn-icons-png.flaticon.com/128/1828/1828270.png" 
-                      alt="edit" class="w-5 h-5" />
+                      <img src="https://cdn-icons-png.flaticon.com/128/1828/1828270.png"
+                        alt="edit" class="w-5 h-5" />
                     </a>
 
                     <form action="delete.php" method="POST" onsubmit="return confirm('Hapus artikel ini?');" class="inline">
@@ -152,7 +153,8 @@ include __DIR__ . '/../_sidebar_admin.php';
 
         <?php
         // helper untuk membangun url pagination sambil mempertahankan query string lain
-        function admin_page_url($p) {
+        function admin_page_url($p)
+        {
           $params = $_GET;
           $params['page'] = $p;
           return htmlspecialchars($_SERVER['PHP_SELF'] . '?' . http_build_query($params));
@@ -201,7 +203,8 @@ include __DIR__ . '/../_sidebar_admin.php';
                 <span class="relative z-10 inline-flex items-center border border-indigo-600 bg-indigo-600 px-3 py-2 text-sm font-semibold text-white"><?= $i ?></span>
               <?php else: ?>
                 <a href="<?= admin_page_url($i) ?>" class="relative inline-flex items-center border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"><?= $i ?></a>
-              <?php endif; endfor;
+            <?php endif;
+            endfor;
 
             if ($end < $totalPages) {
               if ($end < $totalPages - 1) echo '<span class="px-3 py-2 text-sm text-gray-500 border border-gray-300 bg-white">...</span>';

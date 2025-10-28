@@ -6,16 +6,23 @@ require_once __DIR__ . '/../../../config/config.php';
 require_once __DIR__ . '/../../../app/functions.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-if (!$id) { header('Location: index.php'); exit; }
+if (!$id) {
+  header('Location: index.php');
+  exit;
+}
 
 // ambil data
-$stmt = mysqli_prepare($conn, "SELECT id, title, content, featured_image FROM articles WHERE id = ?");
+// adjusted: select from portofolio
+$stmt = mysqli_prepare($conn, "SELECT id, title, content, featured_image FROM portofolio WHERE id = ?");
 mysqli_stmt_bind_param($stmt, "i", $id);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 $article = mysqli_fetch_assoc($res);
 mysqli_stmt_close($stmt);
-if (!$article) { header('Location: index.php'); exit; }
+if (!$article) {
+  header('Location: index.php');
+  exit;
+}
 
 $errors = [];
 $title = $article['title'];
@@ -29,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   // handle image replace
   if (!empty($_FILES['featured_image']['name'])) {
-    $allowed = ['image/jpeg','image/png','image/webp'];
+    $allowed = ['image/jpeg', 'image/png', 'image/webp'];
     if (!in_array($_FILES['featured_image']['type'], $allowed)) {
       $errors[] = 'Tipe file tidak diperbolehkan.';
     } else {
@@ -49,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   if (empty($errors)) {
-    $stmt = mysqli_prepare($conn, "UPDATE articles SET title = ?, content = ?, featured_image = ?, updated_at = NOW() WHERE id = ?");
+    $stmt = mysqli_prepare($conn, "UPDATE portofolio SET title = ?, content = ?, featured_image = ?, updated_at = NOW() WHERE id = ?");
     mysqli_stmt_bind_param($stmt, "sssi", $title, $content, $article['featured_image'], $id);
     $ok = mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
@@ -79,10 +86,12 @@ include __DIR__ . '/../_sidebar_admin.php';
 
     <form action="" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow space-y-4">
       <div><label class="block text-sm font-medium">Judul</label>
-        <input name="title" value="<?= e($title) ?>" class="mt-1 block w-full border px-3 py-2 rounded" required></div>
+        <input name="title" value="<?= e($title) ?>" class="mt-1 block w-full border px-3 py-2 rounded" required>
+      </div>
 
       <div><label class="block text-sm font-medium">Isi</label>
-        <textarea id="editor" name="content" rows="12"><?= e($content) ?></textarea></div>
+        <textarea id="editor" name="content" rows="12"><?= e($content) ?></textarea>
+      </div>
 
       <div>
         <label class="block text-sm font-medium">Gambar Saat Ini</label>
@@ -92,7 +101,8 @@ include __DIR__ . '/../_sidebar_admin.php';
           <div class="w-48 h-32 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-400 mb-2">No image</div>
         <?php endif; ?>
         <div><label class="block text-sm">Ganti Gambar (opsional)</label>
-          <input type="file" name="featured_image" accept="image/*" class="mt-1"></div>
+          <input type="file" name="featured_image" accept="image/*" class="mt-1">
+        </div>
       </div>
 
       <div class="flex items-center gap-3">
@@ -108,11 +118,11 @@ include __DIR__ . '/../_sidebar_admin.php';
 <!-- TinyMCE init same as create.php -->
 <script src="https://cdn.tiny.cloud/1/pveptn3rvibyvg0w1znpaddkzpnzut5pfy7bp4qlmyov14pl/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
-tinymce.init({
-  selector: '#editor',
-  height: 400,
-  plugins: 'image link media table lists code',
-  toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
-  menubar: false
-});
+  tinymce.init({
+    selector: '#editor',
+    height: 400,
+    plugins: 'image link media table lists code',
+    toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
+    menubar: false
+  });
 </script>

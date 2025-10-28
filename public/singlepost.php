@@ -15,10 +15,11 @@ if ($slug === '') {
 
 // ambil artikel dari database
 $stmt = mysqli_prepare($conn, "
-  SELECT a.*, u.name AS author
-  FROM articles a
-  LEFT JOIN users u ON a.author_id = u.id
-  WHERE a.slug = ?
+
+  SELECT p.*, u.name AS author
+  FROM portofolio p
+  LEFT JOIN users u ON p.author_id = u.id
+  WHERE p.slug = ?
   LIMIT 1
 ");
 mysqli_stmt_bind_param($stmt, "s", $slug);

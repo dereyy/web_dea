@@ -11,9 +11,9 @@ $user_id = (int)($_SESSION['user_id'] ?? 0);
 
 // ambil semua artikel yang di-like user (lengkap)
 $stmt = $conn->prepare("
-  SELECT a.id, a.title, a.slug, a.featured_image, a.content, a.created_at, l.created_at AS liked_at
+  SELECT p.id, p.title, p.slug, p.featured_image, p.content, p.created_at, l.created_at AS liked_at
   FROM likes l
-  JOIN articles a ON a.id = l.article_id
+  JOIN portofolio p ON p.id = l.portofolio_id
   WHERE l.user_id = ?
   ORDER BY l.created_at DESC
 ");
@@ -44,8 +44,8 @@ include __DIR__ . '/_sidebar_users.php';
               <div class="text-sm text-gray-500">Dipublikasikan: <?= e(date('d M Y', strtotime($a['created_at']))) ?></div>
               <div class="text-xs text-gray-400 mt-1">Kamu menyukai: <?= e(date('d M Y H:i', strtotime($a['liked_at']))) ?></div>
               <?php
-                // excerpt (opsional)
-                $excerpt = mb_substr(strip_tags($a['content'] ?? ''), 0, 160);
+              // excerpt (opsional)
+              $excerpt = mb_substr(strip_tags($a['content'] ?? ''), 0, 160);
               ?>
               <p class="text-sm text-gray-600 mt-2"><?= e($excerpt) ?><?= (mb_strlen($excerpt) >= 160 ? '...' : '') ?></p>
             </div>

@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $origSlug = $slug;
         $i = 1;
         while (true) {
-            $stmt = mysqli_prepare($conn, "SELECT id FROM articles WHERE slug = ?");
+            $stmt = mysqli_prepare($conn, "SELECT id FROM portofolio WHERE slug = ?");
             mysqli_stmt_bind_param($stmt, "s", $slug);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_store_result($stmt);
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $author_id = current_user_id();
-        $stmt = mysqli_prepare($conn, "INSERT INTO articles (title, slug, content, featured_image, author_id) VALUES (?, ?, ?, ?, ?)");
+        $stmt = mysqli_prepare($conn, "INSERT INTO portofolio (title, slug, content, featured_image, author_id) VALUES (?, ?, ?, ?, ?)");
         mysqli_stmt_bind_param($stmt, "ssssi", $title, $slug, $content, $imagePath, $author_id);
         $ok = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);

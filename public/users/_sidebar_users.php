@@ -15,9 +15,9 @@ $user_id = (int)$_SESSION['user_id'];
 
 // Ambil artikel yang dilike user
 $stmt = $conn->prepare("
-  SELECT a.id, a.title, a.slug, a.created_at, l.created_at AS liked_at
-  FROM likes l
-  JOIN articles a ON a.id = l.article_id
+    SELECT p.id, p.title, p.slug, p.created_at, l.created_at AS liked_at
+    FROM likes l
+  JOIN portofolio p ON p.id = l.portofolio_id
   WHERE l.user_id = ?
   ORDER BY l.created_at DESC
 ");

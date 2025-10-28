@@ -35,7 +35,7 @@ if ($article_id <= 0) {
 }
 
 // optional: cek artikel ada (boleh dilewati, tapi direkomendasikan)
-$stmtChk = $conn->prepare("SELECT id FROM articles WHERE id = ? LIMIT 1");
+$stmtChk = $conn->prepare("SELECT id FROM portofolio WHERE id = ? LIMIT 1");
 $stmtChk->bind_param("i", $article_id);
 $stmtChk->execute();
 $resChk = $stmtChk->get_result();
@@ -47,7 +47,7 @@ if ($resChk->num_rows === 0) {
 $stmtChk->close();
 
 // toggle like
-$stmt = $conn->prepare("SELECT id FROM likes WHERE article_id = ? AND user_id = ? LIMIT 1");
+$stmt = $conn->prepare("SELECT id FROM likes WHERE portofolio_id = ? AND user_id = ? LIMIT 1");
 $stmt->bind_param("ii", $article_id, $user_id);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -64,7 +64,7 @@ if ($res->num_rows > 0) {
 } else {
   // like
   $stmt->close();
-  $ins = $conn->prepare("INSERT INTO likes (article_id, user_id) VALUES (?, ?)");
+  $ins = $conn->prepare("INSERT INTO likes (portofolio_id, user_id) VALUES (?, ?)");
   $ins->bind_param("ii", $article_id, $user_id);
   $ins->execute();
   $ins->close();

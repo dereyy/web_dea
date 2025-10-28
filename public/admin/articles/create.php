@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // handle image upload (opsional)
   $imagePath = null;
   if (!empty($_FILES['featured_image']['name'])) {
-    $allowed = ['image/jpeg','image/png','image/webp'];
+    $allowed = ['image/jpeg', 'image/png', 'image/webp'];
     if (!in_array($_FILES['featured_image']['type'], $allowed)) {
       $errors[] = 'Tipe file tidak diperbolehkan. Gunakan JPG/PNG/WEBP.';
     } else {
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $origSlug = $slug;
     $i = 1;
     while (true) {
-      $stmt = mysqli_prepare($conn, "SELECT id FROM articles WHERE slug = ?");
+      $stmt = mysqli_prepare($conn, "SELECT id FROM portofolio WHERE slug = ?");
       mysqli_stmt_bind_param($stmt, "s", $slug);
       mysqli_stmt_execute($stmt);
       mysqli_stmt_store_result($stmt);
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $author_id = $_SESSION['user_id'] ?? null;
-    $stmt = mysqli_prepare($conn, "INSERT INTO articles (title, slug, content, featured_image, author_id) VALUES (?, ?, ?, ?, ?)");
+    $stmt = mysqli_prepare($conn, "INSERT INTO portofolio (title, slug, content, featured_image, author_id) VALUES (?, ?, ?, ?, ?)");
     mysqli_stmt_bind_param($stmt, "ssssi", $title, $slug, $content, $imagePath, $author_id);
     $ok = mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
@@ -113,11 +113,11 @@ include __DIR__ . '/../_sidebar_admin.php';
 <!-- TinyMCE -->
 <script src="https://cdn.tiny.cloud/1/pveptn3rvibyvg0w1znpaddkzpnzut5pfy7bp4qlmyov14pl/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
-tinymce.init({
-  selector: '#editor',
-  height: 400,
-  plugins: 'image link media table lists code',
-  toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code',
-  menubar: false
-});
+  tinymce.init({
+    selector: '#editor',
+    height: 400,
+    plugins: 'image link media table lists code',
+    toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code',
+    menubar: false
+  });
 </script>

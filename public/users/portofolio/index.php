@@ -10,16 +10,16 @@ $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 
 $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
-$whereSql = 'WHERE a.author_id = ?';
+$whereSql = 'WHERE p.author_id = ?';
 $like = '';
 // current user id for binding
 $uid = current_user_id();
 if ($searchQuery !== '') {
-    $whereSql .= " AND (a.title LIKE ? OR a.content LIKE ?)";
+    $whereSql .= " AND (p.title LIKE ? OR p.content LIKE ?)";
 }
 
 // COUNT
-$sqlCount = "SELECT COUNT(*) AS cnt FROM articles a $whereSql";
+$sqlCount = "SELECT COUNT(*) AS cnt FROM portofolio p $whereSql";
 $stmtCount = mysqli_prepare($conn, $sqlCount);
 if ($searchQuery !== '') {
     $like = '%' . $searchQuery . '%';
@@ -36,11 +36,11 @@ mysqli_stmt_close($stmtCount);
 $totalPages = (int) ceil(max(1, $total) / $perPage);
 
 // SELECT
-$sql = "SELECT a.id, a.title, a.slug, a.featured_image, a.created_at
-        FROM articles a
-        $whereSql
-        ORDER BY a.created_at DESC
-        LIMIT ? OFFSET ?";
+$sql = "SELECT p.id, p.title, p.slug, p.featured_image, p.created_at
+    FROM portofolio p
+    $whereSql
+    ORDER BY p.created_at DESC
+    LIMIT ? OFFSET ?";
 
 $stmt = mysqli_prepare($conn, $sql);
 if ($searchQuery !== '') {

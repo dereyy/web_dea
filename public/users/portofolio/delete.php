@@ -25,7 +25,7 @@ if (!$id) {
 $uid = current_user_id();
 
 // ambil featured image pastikan milik user
-$stmt = mysqli_prepare($conn, "SELECT featured_image FROM articles WHERE id = ? AND author_id = ?");
+$stmt = mysqli_prepare($conn, "SELECT featured_image FROM portofolio WHERE id = ? AND author_id = ?");
 mysqli_stmt_bind_param($stmt, "ii", $id, $uid);
 mysqli_stmt_execute($stmt);
 mysqli_stmt_bind_result($stmt, $img);
@@ -33,7 +33,7 @@ mysqli_stmt_fetch($stmt);
 mysqli_stmt_close($stmt);
 
 // hapus row
-$stmt = mysqli_prepare($conn, "DELETE FROM articles WHERE id = ? AND author_id = ?");
+$stmt = mysqli_prepare($conn, "DELETE FROM portofolio WHERE id = ? AND author_id = ?");
 mysqli_stmt_bind_param($stmt, "ii", $id, $uid);
 $ok = mysqli_stmt_execute($stmt);
 mysqli_stmt_close($stmt);
