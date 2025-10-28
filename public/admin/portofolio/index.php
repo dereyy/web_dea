@@ -1,7 +1,7 @@
 <?php
-// public/users/portofolio/index.php
+// public/admin/portofolio/index.php
 require_once __DIR__ . '/../../../app/auth.php';
-require_login();
+require_admin();
 require_once __DIR__ . '/../../../config/config.php';
 require_once __DIR__ . '/../../../app/functions.php';
 
@@ -10,22 +10,17 @@ $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 
 $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
-$whereSql = 'WHERE p.author_id = ?';
+$whereSql = '';
 $like = '';
-// current user id for binding
-$uid = current_user_id();
 if ($searchQuery !== '') {
-    $whereSql .= " AND (p.title LIKE ? OR p.content LIKE ?)";
+    $whereSql = "WHERE (p.title LIKE ? OR p.content LIKE ?)";
+    $like = '%' . $searchQuery . '%';
 }
 
-// COUNT
 $sqlCount = "SELECT COUNT(*) AS cnt FROM portofolio p $whereSql";
 $stmtCount = mysqli_prepare($conn, $sqlCount);
 if ($searchQuery !== '') {
-    $like = '%' . $searchQuery . '%';
-    mysqli_stmt_bind_param($stmtCount, 'iss', $uid, $like, $like);
-} else {
-    mysqli_stmt_bind_param($stmtCount, 'i', $uid);
+    mysqli_stmt_bind_param($stmtCount, 'ss', $like, $like);
 }
 mysqli_stmt_execute($stmtCount);
 $resCount = mysqli_stmt_get_result($stmtCount);
@@ -35,34 +30,34 @@ mysqli_stmt_close($stmtCount);
 
 $totalPages = (int) ceil(max(1, $total) / $perPage);
 
-// SELECT
-$sql = "SELECT p.id, p.title, p.slug, p.featured_image, p.created_at
-    FROM portofolio p
-    $whereSql
-    ORDER BY p.created_at DESC
-    LIMIT ? OFFSET ?";
+$sql = "SELECT p.id, p.title, p.slug, p.featured_image, p.created_at, u.name AS author
+  FROM portofolio p
+  LEFT JOIN users u ON p.author_id = u.id
+  $whereSql
+  ORDER BY p.created_at DESC
+  LIMIT ? OFFSET ?";
 
 $stmt = mysqli_prepare($conn, $sql);
 if ($searchQuery !== '') {
-    mysqli_stmt_bind_param($stmt, 'issii', $uid, $like, $like, $perPage, $offset);
+    mysqli_stmt_bind_param($stmt, "ssii", $like, $like, $perPage, $offset);
 } else {
-    mysqli_stmt_bind_param($stmt, 'iii', $uid, $perPage, $offset);
+    mysqli_stmt_bind_param($stmt, "ii", $perPage, $offset);
 }
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $articles = mysqli_fetch_all($result, MYSQLI_ASSOC);
 mysqli_stmt_close($stmt);
 
-include __DIR__ . '/../_header_users.php';
-include __DIR__ . '/../_sidebar_users.php';
+include __DIR__ . '/../_header_admin.php';
+include __DIR__ . '/../_sidebar_admin.php';
 ?>
 
 <main class="flex-1 p-8">
     <div class="max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-6">
             <div>
-                <h1 class="text-2xl font-semibold mb-2">Portofolio Saya</h1>
-                <div class="text-sm text-gray-500">Total: <span class="font-medium"><?= $total ?></span></div>
+                <h1 class="text-2xl font-semibold mb-2">Kelola Portofolio</h1>
+                <div class="text-sm text-gray-500">Total portofolio: <span class="font-medium"><?= $total ?></span></div>
             </div>
         </div>
 
@@ -88,6 +83,7 @@ include __DIR__ . '/../_sidebar_users.php';
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thumbnail</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">author</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -97,9 +93,11 @@ include __DIR__ . '/../_sidebar_users.php';
                         foreach ($articles as $a): ?>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 text-sm text-gray-600 align-top"><?= $no++ ?></td>
+
                                 <td class="px-4 py-3 align-top">
                                     <div class="font-medium text-gray-800"><?= e($a['title']) ?></div>
                                 </td>
+
                                 <td class="px-4 py-3 align-top">
                                     <?php if ($a['featured_image']): ?>
                                         <img src="<?= e('../../' . $a['featured_image']) ?>" alt="" class="w-20 h-12 object-cover rounded">
@@ -107,16 +105,20 @@ include __DIR__ . '/../_sidebar_users.php';
                                         <div class="w-20 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">No image</div>
                                     <?php endif; ?>
                                 </td>
+
+                                <td class="px-4 py-3 text-sm text-gray-700 align-top"><?= e($a['author'] ?? 'Unknown') ?></td>
+
                                 <td class="px-4 py-3 text-sm text-gray-600 align-top"><?= date('d M Y', strtotime($a['created_at'])) ?></td>
+
                                 <td class="px-4 py-3 text-center align-top">
                                     <div class="inline-flex items-center gap-2">
                                         <a href="edit.php?id=<?= $a['id'] ?>" class="text-indigo-600 text-sm px-2 py-1 rounded hover:bg-indigo-50">
-                                            <img src="https://cdn-icons-png.flaticon.com/128/1828/1828270.png" alt="edit" class="w-5 h-5" />
+                                            <img src="https://cdn-icons-png.flaticon.com/128/1828/1828270.png"
+                                                alt="edit" class="w-5 h-5" />
                                         </a>
 
-                                        <form action="delete.php" method="POST" onsubmit="return confirm('Hapus artikel ini?');" class="inline">
+                                        <form action="delete.php" method="POST" onsubmit="return confirm('Hapus portofolio ini?');" class="inline">
                                             <input type="hidden" name="id" value="<?= $a['id'] ?>">
-                                            <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
                                             <button type="submit" class="text-red-600 text-sm px-2 py-1 rounded hover:bg-red-50">
                                                 <img src="https://cdn-icons-png.flaticon.com/128/11540/11540197.png" alt="hapus" class="w-5 h-5">
                                             </button>
@@ -134,8 +136,9 @@ include __DIR__ . '/../_sidebar_users.php';
             </div>
 
             <?php if ($totalPages > 1): ?>
+
                 <?php
-                function user_page_url($p)
+                function admin_page_url($p)
                 {
                     $params = $_GET;
                     $params['page'] = $p;
@@ -149,12 +152,12 @@ include __DIR__ . '/../_sidebar_users.php';
                         <span class="font-medium"><?= $offset + 1 ?></span> -
                         <span class="font-medium"><?= min($offset + $perPage, $total) ?></span>
                         dari
-                        <span class="font-medium"><?= $total ?></span> artikel
+                        <span class="font-medium"><?= $total ?></span> portofolio
                     </div>
 
                     <nav class="inline-flex -space-x-px rounded-md shadow-xs" aria-label="Pagination">
                         <?php if ($page > 1): ?>
-                            <a href="<?= user_page_url($page - 1) ?>" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 border border-gray-300 bg-white hover:bg-gray-50" aria-label="Previous">
+                            <a href="<?= admin_page_url($page - 1) ?>" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 border border-gray-300 bg-white hover:bg-gray-50" aria-label="Previous">
                                 <span class="sr-only">Previous</span>
                                 <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="w-5 h-5">
                                     <path d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06L5.47 10.53a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" />
@@ -172,7 +175,7 @@ include __DIR__ . '/../_sidebar_users.php';
                         $start = max(1, $page - 2);
                         $end = min($totalPages, $page + 2);
                         if ($start > 1) {
-                            echo '<a href="' . user_page_url(1) . '" class="px-3 py-2 text-sm text-gray-700 border border-gray-300 bg-white hover:bg-gray-50">1</a>';
+                            echo '<a href="' . admin_page_url(1) . '" class="px-3 py-2 text-sm text-gray-700 border border-gray-300 bg-white hover:bg-gray-50">1</a>';
                             if ($start > 2) echo '<span class="px-3 py-2 text-sm text-gray-500 border border-gray-300 bg-white">...</span>';
                         }
 
@@ -181,18 +184,18 @@ include __DIR__ . '/../_sidebar_users.php';
                         ?>
                                 <span class="relative z-10 inline-flex items-center border border-indigo-600 bg-indigo-600 px-3 py-2 text-sm font-semibold text-white"><?= $i ?></span>
                             <?php else: ?>
-                                <a href="<?= user_page_url($i) ?>" class="relative inline-flex items-center border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"><?= $i ?></a>
+                                <a href="<?= admin_page_url($i) ?>" class="relative inline-flex items-center border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"><?= $i ?></a>
                         <?php endif;
                         endfor;
 
                         if ($end < $totalPages) {
                             if ($end < $totalPages - 1) echo '<span class="px-3 py-2 text-sm text-gray-500 border border-gray-300 bg-white">...</span>';
-                            echo '<a href="' . user_page_url($totalPages) . '" class="px-3 py-2 text-sm text-gray-700 border border-gray-300 bg-white hover:bg-gray-50">' . $totalPages . '</a>';
+                            echo '<a href="' . admin_page_url($totalPages) . '" class="px-3 py-2 text-sm text-gray-700 border border-gray-300 bg-white hover:bg-gray-50">' . $totalPages . '</a>';
                         }
                         ?>
 
                         <?php if ($page < $totalPages): ?>
-                            <a href="<?= user_page_url($page + 1) ?>" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 border border-gray-300 bg-white hover:bg-gray-50" aria-label="Next">
+                            <a href="<?= admin_page_url($page + 1) ?>" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 border border-gray-300 bg-white hover:bg-gray-50" aria-label="Next">
                                 <span class="sr-only">Next</span>
                                 <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="w-5 h-5">
                                     <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" />
@@ -213,4 +216,4 @@ include __DIR__ . '/../_sidebar_users.php';
     </div>
 </main>
 
-<?php include __DIR__ . '/../_footer_users.php'; ?>
+<?php include __DIR__ . '/../_footer_admin.php'; ?>

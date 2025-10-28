@@ -8,8 +8,8 @@ require_once __DIR__ . '/../app/auth.php'; // pastikan auth/session tersedia
 $slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
 
 if ($slug === '') {
-  // redirect ke daftar artikel kalau slug kosong
-  header('Location: articles.php');
+  // redirect ke daftar portofolio kalau slug kosong
+  header('Location: portofolio.php');
   exit;
 }
 
@@ -32,8 +32,8 @@ mysqli_stmt_close($stmt);
 if (!$article) {
   include __DIR__ . '/_header.php';
   echo '<div class="max-w-3xl mx-auto py-10 text-center">
-          <h2 class="text-2xl font-semibold text-gray-700">Artikel tidak ditemukan</h2>
-          <a href="articles.php" class="text-indigo-600 hover:underline">← Kembali ke daftar artikel</a>
+          <h2 class="text-2xl font-semibold text-gray-700">Portofolio tidak ditemukan</h2>
+          <a href="portofolio.php" class="text-indigo-600 hover:underline">← Kembali ke daftar portofolio</a>
         </div>';
   include __DIR__ . '/_footer.php';
   exit;
@@ -69,9 +69,50 @@ include __DIR__ . '/_header.php';
   <!-- Komentar Section (form + daftar komentar) -->
   <!-- Komentar dinonaktifkan: fitur komentar telah dihapus -->
 
+  <!-- Like button -->
+  <div class="mt-6">
+    <?php
+    $currentUser = $_SESSION['user_id'] ?? null;
+    $countLikes = 0;
+    $hasLiked = false;
+    if ($article) {
+      $stmtL = mysqli_prepare($conn, "SELECT COUNT(*) AS cnt FROM likes WHERE portofolio_id = ?");
+      mysqli_stmt_bind_param($stmtL, 'i', $article['id']);
+      mysqli_stmt_execute($stmtL);
+      $resL = mysqli_stmt_get_result($stmtL);
+      $rL = mysqli_fetch_assoc($resL);
+      $countLikes = (int)($rL['cnt'] ?? 0);
+      mysqli_stmt_close($stmtL);
+
+      if ($currentUser) {
+        $stmt2 = mysqli_prepare($conn, "SELECT id FROM likes WHERE portofolio_id = ? AND user_id = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmt2, 'ii', $article['id'], $currentUser);
+        mysqli_stmt_execute($stmt2);
+        $res2 = mysqli_stmt_get_result($stmt2);
+        $hasLiked = $res2->num_rows > 0;
+        mysqli_stmt_close($stmt2);
+      }
+    }
+    ?>
+
+    <div class="flex items-center">
+      <?php if ($currentUser): ?>
+        <form method="POST" action="/web-dea/public/process_like.php" class="inline">
+          <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">
+          <input type="hidden" name="article_id" value="<?= e($article['id']) ?>">
+          <button type="submit" class="px-3 py-2 rounded <?= $hasLiked ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-700' ?>">
+            <?= $hasLiked ? 'Unlike' : 'Like' ?> (<?= $countLikes ?>)
+          </button>
+        </form>
+      <?php else: ?>
+        <a href="/web-dea/public/login.php" class="px-3 py-2 bg-gray-100 rounded">Login to like (<?= $countLikes ?>)</a>
+      <?php endif; ?>
+    </div>
+  </div>
+
   <!-- Tombol kembali -->
   <div class="mt-8">
-    <a href="articles.php" class="text-indigo-600 hover:underline">← Kembali ke daftar artikel</a>
+    <a href="portofolio.php" class="text-indigo-600 hover:underline">← Kembali ke daftar portofolio</a>
   </div>
 </article>
 

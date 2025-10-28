@@ -29,11 +29,11 @@ $user_role = $_SESSION['user_role'] ?? 'admin';
       Manajemen Akun
     </a>
 
-    <a href="<?= $base ?>/admin/articles/index.php" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-indigo-50">
+    <a href="<?= $base ?>/admin/portofolio/index.php" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-indigo-50">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-8-4h8M4 6h16v12H4z" />
       </svg>
-      Kelola Artikel
+      Kelola Portofolio
     </a>
 
     <a href="<?= $base ?>/logout.php" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-indigo-50 text-red-600">

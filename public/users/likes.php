@@ -9,7 +9,7 @@ require_login();
 
 $user_id = (int)($_SESSION['user_id'] ?? 0);
 
-// ambil semua artikel yang di-like user (lengkap)
+// ambil semua portofolio yang di-like user (lengkap)
 $stmt = $conn->prepare("
   SELECT p.id, p.title, p.slug, p.featured_image, p.content, p.created_at, l.created_at AS liked_at
   FROM likes l
@@ -29,10 +29,10 @@ include __DIR__ . '/_sidebar_users.php';
 <main class="flex-1 p-8">
   <div class="max-w-4xl mx-auto">
     <h1 class="text-2xl font-semibold mb-2">Postingan yang Kamu Sukai</h1>
-    <p class="text-gray-600 mb-6">Daftar artikel yang pernah kamu beri <strong>Like</strong>. Kamu bisa membatalkan like dari sini.</p>
+    <p class="text-gray-600 mb-6">Daftar portofolio yang pernah kamu beri <strong>Like</strong>. Kamu bisa membatalkan like dari sini.</p>
 
     <?php if (empty($liked)): ?>
-      <div class="bg-white p-6 rounded shadow text-gray-600">Kamu belum menyukai artikel apapun.</div>
+      <div class="bg-white p-6 rounded shadow text-gray-600">Kamu belum menyukai portofolio apapun.</div>
     <?php else: ?>
       <div class="space-y-4">
         <?php foreach ($liked as $a): ?>

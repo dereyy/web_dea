@@ -38,7 +38,7 @@ if ($stmt === false) {
         I am <span class="text-indigo-700">Web Developer</span><br />
       </h1>
       <p class="mt-4 text-gray-600 max-w-xl">Exceptional website performance and design. Dea makes success feel effortless.</p>
-      <a href="articles.php" class="inline-block mt-6 bg-indigo-600  py-3shadow hover:bg-indigo-600 text-white px-4 py-2 rounded">Portofolio</a>
+      <a href="portofolio.php" class="inline-block mt-6 bg-indigo-600  py-3shadow hover:bg-indigo-600 text-white px-4 py-2 rounded">Portofolio</a>
     </div>
 
     <div class="md:w-3/5 flex justify-center md:justify-end">
@@ -53,7 +53,7 @@ if ($stmt === false) {
 <section id="portfolio" class="mb-12">
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-semibold text-gray-800">Portofolio Dea</h2>
-    <a href="articles.php" class="text-indigo-600 hover:underline text-sm">Lihat Semua Portofolio →</a>
+    <a href="portofolio.php" class="text-indigo-600 hover:underline text-sm">Lihat Semua Portofolio →</a>
   </div>
 
   <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
