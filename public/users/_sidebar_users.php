@@ -38,11 +38,19 @@ $stmt->close();
   </div>
   <!-- pilihan sidebar -->
   <nav class="px-4 py-6 space-y-2">
-    <a href="users_dashboard.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= basename($_SERVER['PHP_SELF']) === 'users_dashboard' ? 'bg-indigo-50 font-semibold' : '' ?>">Dashboard</a>
-    <a href="portofolio/index.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= (strpos($_SERVER['REQUEST_URI'], 'portofolio') !== false) ? 'bg-indigo-50 font-semibold' : '' ?>">Portofolio</a>
-    <a href="likes.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= basename($_SERVER['PHP_SELF']) === 'likes.php' ? 'bg-indigo-50 font-semibold' : '' ?>">Disukai</a>
+    <?php
+    // Use root-relative paths so links work even when current page is in a subfolder like /users/portofolio/
+    $uri = $_SERVER['REQUEST_URI'];
+    $isDashboard = strpos($uri, '/users/users_dashboard.php') !== false || strpos($uri, '/users/users_dashboard') !== false;
+    $isPortofolio = strpos($uri, '/users/portofolio') !== false;
+    $isLikes = strpos($uri, '/users/likes.php') !== false || strpos($uri, '/users/likes') !== false;
+    ?>
+
+    <a href="/web-dea/public/users/users_dashboard.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= $isDashboard ? 'bg-indigo-50 font-semibold' : '' ?>">Dashboard</a>
+    <a href="/web-dea/public/users/portofolio/index.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= $isPortofolio ? 'bg-indigo-50 font-semibold' : '' ?>">Portofolio</a>
+    <a href="/web-dea/public/users/likes.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= $isLikes ? 'bg-indigo-50 font-semibold' : '' ?>">Disukai</a>
     <!-- link komentar dihapus karena fitur komentar dinonaktifkan -->
-    <a href="../logout.php" class="block px-3 py-2 rounded hover:bg-indigo-50 text-red-600">Logout</a>
+    <a href="/web-dea/public/logout.php" class="block px-3 py-2 rounded hover:bg-indigo-50 text-red-600">Logout</a>
   </nav>
   <!-- user / admin profile block removed as requested -->
   <!-- Home atau index.php -->
