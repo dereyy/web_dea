@@ -1,9 +1,8 @@
 <?php
-// app/process_like.php
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// includes: sesuaikan path bila config/db ada di lokasi lain
-require_once __DIR__ . '/..' . '/config/config.php'; // <-- pastikan file config di folder config/
+require_once __DIR__ . '/..' . '/config/config.php'; 
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/auth.php';
 
@@ -26,8 +25,6 @@ if (!verify_csrf()) {
 }
 
 $user_id = (int)$_SESSION['user_id'];
-// preferensi nama: gunakan 'portofolio_id' (sesuai nama tabel kolom),
-// tapi fallback ke 'article_id' agar kompatibel dengan form lama
 $portofolio_id = (int)($_POST['portofolio_id'] ?? ($_POST['article_id'] ?? 0));
 
 if ($portofolio_id <= 0) {
@@ -35,7 +32,7 @@ if ($portofolio_id <= 0) {
   exit;
 }
 
-// optional: cek artikel ada (boleh dilewati, tapi direkomendasikan)
+// cek portofolio ada?
 $stmtChk = $conn->prepare("SELECT id FROM portofolio WHERE id = ? LIMIT 1");
 $stmtChk->bind_param("i", $portofolio_id);
 $stmtChk->execute();

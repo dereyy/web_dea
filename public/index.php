@@ -14,6 +14,7 @@ $sql = "SELECT p.id, p.title, p.slug, p.featured_image, p.content, p.created_at,
   ORDER BY p.created_at DESC
   LIMIT 3";
 
+// menghindari SQL Injection
 $stmt = mysqli_prepare($conn, $sql);
 if ($stmt === false) {
   $dbError = mysqli_error($conn);
@@ -29,7 +30,7 @@ if ($stmt === false) {
 }
 ?>
 
-<!-- HERO: Statis (mengganti carousel sesuai permintaan) -->
+<!-- HERO -->
 <section id="hero" class="mb-12 mt-20 bg-indigo-50 rounded-lg p-8">
   <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 px-4">
     <div class="md:w-2/5 text-left">

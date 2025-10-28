@@ -9,28 +9,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
-// disini adalah data2 yang kita masukkan pada saat kita membuat akun register atau daftar akun
 $name = trim($_POST['name'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
-// disini semisal salah satu pada saat kita daftar data nya itu kosong
-// maka nanti keluar alert atau message yaitu semua field wajib diisi
 if ($name === '' || $email === '' || $password === '') {
   header('Location: ../public/register.php?error=' . urlencode('Semua field wajib diisi'));
   exit;
 }
 
-// untuk memastikan suatu email itu memiliki struktur email yang valid
-// nama@string.string nama@gmail.com nama@yahoo.com
-// jika kita input email yang tidak sesuai atau tidak valid
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
   header('Location: ../public/register.php?error=' . urlencode('Email tidak valid'));
   exit;
 }
 
 // kalau misal kita masukkin password lebih kecil dari 6 karakter
-// kita enggak boleh isi karakter kurang dari 6 karakter
 if (strlen($password) < 6) {
   header('Location: ../public/register.php?error=' . urlencode('Password minimal 6 karakter'));
   exit;
@@ -49,21 +42,16 @@ if (mysqli_stmt_num_rows($stmt) > 0) {
 }
 mysqli_stmt_close($stmt);
 
-// simpan user
-// password akan otomatis di hash jika user sudah membuat akun
+
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
-// akun tersebut akan disimpan di dalam database dengan role default yaitu user
 $stmt = mysqli_prepare($conn, "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 'user')");
 if (!$stmt) {
   header('Location: ../public/register.php?error=' . urlencode('Terjadi kesalahan server'));
   exit;
 }
 mysqli_stmt_bind_param($stmt, "sss", $name, $email, $password_hash);
-// ok berarti akun tersebut kita masukin ya atau eksekusi
 $ok = mysqli_stmt_execute($stmt);
-// pemrosesan akun
 mysqli_stmt_close($stmt);
-// tutup koneksi
 mysqli_close($conn);
 
 if ($ok) {

@@ -1,21 +1,20 @@
 <?php
-// public/_header.php - Tailwind (updated: show profile dropdown when logged in)
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// safe include helper (pastikan path benar)
 require_once __DIR__ . '/../app/functions.php';
 
 $logged = isset($_SESSION['user_id']);
-$current = basename($_SERVER['PHP_SELF']); // deteksi file aktif
+$current = basename($_SERVER['PHP_SELF']);
 
-// helper: tentukan link dashboard berdasarkan role
 function dashboard_link_for_role()
 {
   $role = $_SESSION['user_role'] ?? 'user';
-  if ($role === 'admin') {
-    return 'admin/admin_dashboard.php'; // atau 'admin/' kalau index.php di folder admin
+  // jika ada admin role dan file admin dashboard tersedia, kembalikan link admin
+  $adminFile = __DIR__ . '/admin/admin_dashboard.php';
+  if ($role === 'admin' && file_exists($adminFile)) {
+    return 'admin/admin_dashboard.php';
   }
-  return 'users/users_dashboard.php'; // atau 'users/'
+  return 'users/users_dashboard.php';
 }
 ?>
 <!doctype html>
