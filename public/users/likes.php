@@ -54,7 +54,8 @@ include __DIR__ . '/_sidebar_users.php';
               <!-- Unlike form: action relatif ke public/process_like.php -->
               <form method="post" action="../process_like.php">
                 <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">
-                <input type="hidden" name="article_id" value="<?= e($a['id']) ?>">
+                <!-- gunakan portofolio_id untuk konsistensi nama kolom di database -->
+                <input type="hidden" name="portofolio_id" value="<?= e($a['id']) ?>">
                 <button type="submit" class="inline-flex items-center px-3 py-2 rounded bg-red-500 text-white hover:bg-red-600">
                   Unlike
                 </button>

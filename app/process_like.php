@@ -19,7 +19,6 @@ if (empty($_SESSION['user_id'])) {
   exit;
 }
 
-// CSRF check (fungsi verify_csrf() ada di functions.php)
 if (!verify_csrf()) {
   http_response_code(400);
   echo "Invalid CSRF token";
@@ -27,16 +26,18 @@ if (!verify_csrf()) {
 }
 
 $user_id = (int)$_SESSION['user_id'];
-$article_id = (int)($_POST['article_id'] ?? 0);
+// preferensi nama: gunakan 'portofolio_id' (sesuai nama tabel kolom),
+// tapi fallback ke 'article_id' agar kompatibel dengan form lama
+$portofolio_id = (int)($_POST['portofolio_id'] ?? ($_POST['article_id'] ?? 0));
 
-if ($article_id <= 0) {
+if ($portofolio_id <= 0) {
   header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/'));
   exit;
 }
 
 // optional: cek artikel ada (boleh dilewati, tapi direkomendasikan)
 $stmtChk = $conn->prepare("SELECT id FROM portofolio WHERE id = ? LIMIT 1");
-$stmtChk->bind_param("i", $article_id);
+$stmtChk->bind_param("i", $portofolio_id);
 $stmtChk->execute();
 $resChk = $stmtChk->get_result();
 if ($resChk->num_rows === 0) {
@@ -48,7 +49,7 @@ $stmtChk->close();
 
 // toggle like
 $stmt = $conn->prepare("SELECT id FROM likes WHERE portofolio_id = ? AND user_id = ? LIMIT 1");
-$stmt->bind_param("ii", $article_id, $user_id);
+$stmt->bind_param("ii", $portofolio_id, $user_id);
 $stmt->execute();
 $res = $stmt->get_result();
 
@@ -65,7 +66,7 @@ if ($res->num_rows > 0) {
   // like
   $stmt->close();
   $ins = $conn->prepare("INSERT INTO likes (portofolio_id, user_id) VALUES (?, ?)");
-  $ins->bind_param("ii", $article_id, $user_id);
+  $ins->bind_param("ii", $portofolio_id, $user_id);
   $ins->execute();
   $ins->close();
 }
