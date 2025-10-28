@@ -44,31 +44,7 @@ $user_role = $_SESSION['user_role'] ?? 'admin';
     </a>
   </nav>
 
-  <!-- Profile Logged in -->
-  <div class="p-4 border-t text-sm text-gray-600">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <!-- dummy avatar -->
-        <img src="<?= $avatar_url ?>" alt="avatar"
-          class="w-8 h-8 rounded-full object-cover border">
-
-        <div>
-          <div class="text-xs text-gray-500 mb-1">Signed in as</div>
-          <div class="font-medium"><?= e($user_name) ?></div>
-          <div class="text-xs text-gray-500 mt-1">Role: <?= e($user_role) ?></div>
-        </div>
-      </div>
-
-
-      <!-- icon edit profile -->
-      <a href="<?= $base ?>/admin/profile.php" title="Edit Profile"
-        class="inline-flex items-center justify-center w-8 h-8 rounded hover:bg-gray-100">
-        <img src="https://cdn-icons-png.flaticon.com/128/484/484562.png"
-          alt="Edit Profile"
-          class="w-5 h-5" />
-      </a>
-    </div>
-  </div>
+  <!-- Profile block removed as requested -->
 
   <!-- back to home -->
   <div class="border-t p-4 text-sm text-gray-600 space-y-3">

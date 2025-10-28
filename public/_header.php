@@ -96,7 +96,6 @@ function dashboard_link_for_role()
               <li><a href="index.php#hero" class="nav-link text-gray-600 hover:text-purple-600">Home</a></li>
               <li><a href="index.php#portfolio" class="nav-link text-gray-600 hover:text-purple-600">Portfolio</a></li>
               <li><a href="index.php#about" class="nav-link text-gray-600 hover:text-purple-600">About me</a></li>
-              <li><a href="index.php#contact" class="nav-link text-gray-600 hover:text-purple-600">Contact Me</a></li>
             </ul>
           </nav>
 
@@ -162,7 +161,7 @@ function dashboard_link_for_role()
       // Active nav on scroll: highlight current section link
       // Wait for DOMContentLoaded so sections (hero, portfolio, etc.) exist
       document.addEventListener('DOMContentLoaded', function() {
-        const ids = ['hero', 'portfolio', 'about', 'contact'];
+        const ids = ['hero', 'portfolio', 'about'];
         const links = Array.from(document.querySelectorAll('.nav-link'));
         if (!links.length) return;
 

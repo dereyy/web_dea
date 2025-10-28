@@ -1,43 +1,8 @@
 <?php
-// app/process_delete_user.php
+// app/process_delete_user.php — disabled because delete-user feature removed
 if (session_status() === PHP_SESSION_NONE) session_start();
-
-require_once __DIR__ . '/auth.php';
-require_once __DIR__ . '/../config/config.php';
-
-require_admin(); // only admin allowed
-
-// Only allow POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /pert6-web-blog/public/admin/role_management.php');
-    exit;
-}
-
-// CSRF check (we used $_SESSION['csrf_role_mgmt'] in role_management.php)
-$csrf = $_POST['csrf'] ?? '';
-if (empty($csrf) || empty($_SESSION['csrf_role_mgmt']) || !hash_equals($_SESSION['csrf_role_mgmt'], $csrf)) {
-    $_SESSION['flash'] = 'Form tidak valid (CSRF).';
-    header('Location: /pert6-web-blog/public/admin/role_management.php');
-    exit;
-}
-// Optional: unset token to force new one next load
-unset($_SESSION['csrf_role_mgmt']);
-
-$user_id = (int)($_POST['user_id'] ?? 0);
-if ($user_id <= 0) {
-    $_SESSION['flash'] = 'User tidak valid.';
-    header('Location: /pert6-web-blog/public/admin/role_management.php');
-    exit;
-}
-
-// Prevent deleting self
-if ($user_id === (int)current_user_id()) {
-    $_SESSION['flash'] = 'Anda tidak dapat menghapus akun diri sendiri.';
-    header('Location: /pert6-web-blog/public/admin/role_management.php');
-    exit;
-}
-
-// Check user exists (and capture for audit)
+header('Location: /pert6-web-blog/public/admin/role_management.php');
+exit;
 $stmt = $conn->prepare("SELECT id, name, email FROM users WHERE id = ? LIMIT 1");
 $stmt->bind_param('i', $user_id);
 $stmt->execute();

@@ -34,7 +34,7 @@ $recent = array_slice($articles, 0, 3);
         I am <span class="text-indigo-700">Web Developer</span><br />
       </h1>
       <p class="mt-4 text-gray-600 max-w-xl">Exceptional website performance and design. Dea makes success feel effortless.</p>
-      <a href="contact.php" class="inline-block mt-6 bg-indigo-600  py-3shadow hover:bg-indigo-600 text-white px-4 py-2 rounded">Portofolio</a>
+      <a href="articles.php" class="inline-block mt-6 bg-indigo-600  py-3shadow hover:bg-indigo-600 text-white px-4 py-2 rounded">Portofolio</a>
     </div>
 
     <div class="md:w-3/5 flex justify-center md:justify-end">
@@ -86,37 +86,7 @@ $recent = array_slice($articles, 0, 3);
   </div>
 </section>
 
-<!-- CALL TO ACTION / Social -->
-<section id="contact" class="mb-16">
-  <div class="bg-white rounded-lg shadow-md p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-    <div>
-      <h3 class="text-lg font-semibold text-gray-800">Tetap Terhubung</h3>
-      <p class="text-sm text-gray-600 mt-1">Ikuti update artikel dan pengumuman terbaru—boleh juga kirimkan pertanyaan lewat kontak.</p>
-    </div>
-
-    <div class="flex items-center gap-3">
-      <!-- Instagram -->
-      <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener" class="w-10 h-10 flex items-center justify-center rounded-full  from-pink-500 to-yellow-400 shadow hover:scale-110 transition-transform" aria-label="Instagram">
-        <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" class="w-5 h-5">
-      </a>
-
-      <!-- WhatsApp -->
-      <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="w-10 h-10 flex items-center justify-center rounded-full  shadow hover:scale-110 transition-transform" aria-label="WhatsApp">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" class="w-5 h-5">
-      </a>
-
-      <!-- Twitter -->
-      <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener" class="w-10 h-10 flex items-center justify-center rounded-full shadow hover:scale-110 transition-transform" aria-label="Twitter">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" class="w-5 h-5">
-      </a>
-
-      <!-- Facebook -->
-      <a href="https://facebook.com/yourpage" target="_blank" rel="noopener" class="w-10 h-10 flex items-center justify-center rounded-full shadow hover:scale-110 transition-transform" aria-label="Facebook">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" class="w-5 h-5">
-      </a>
-    </div>
-  </div>
-</section>
+<!-- Contact section removed as requested -->
 
 <!-- Carousel script -->
 <script>

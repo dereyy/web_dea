@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../config/config.php';
 
 // CSRF token (single-use per page load)
 if (empty($_SESSION['csrf_role_mgmt'])) {
-    $_SESSION['csrf_role_mgmt'] = bin2hex(random_bytes(24));
+  $_SESSION['csrf_role_mgmt'] = bin2hex(random_bytes(24));
 }
 $csrf_token = $_SESSION['csrf_role_mgmt'];
 
@@ -46,10 +46,10 @@ include __DIR__ . '/_sidebar_admin.php';
       <div class="px-4 py-3 sm:px-6 flex items-center justify-between">
         <div class="text-sm text-gray-600">Total users: <span class="font-medium text-gray-800"><?= $result->num_rows ?></span></div>
         <!-- tambah user -->
-         <p class="mt-4 text-right">
-            <a href="/pert6-web-blog/public/admin/add_user.php" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                Tambah User
-            </a>
+        <p class="mt-4 text-right">
+          <a href="/pert6-web-blog/public/admin/add_user.php" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+            Tambah User
+          </a>
         </p>
         <!-- end -->
       </div>
@@ -82,10 +82,10 @@ include __DIR__ . '/_sidebar_admin.php';
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                     <?php
-                      // color label by role
-                      if ($row['role'] === 'admin') echo 'bg-red-100 text-red-800';
-                      elseif ($row['role'] === 'editor') echo 'bg-yellow-100 text-yellow-800';
-                      else echo 'bg-gray-100 text-gray-800';
+                    // color label by role
+                    if ($row['role'] === 'admin') echo 'bg-red-100 text-red-800';
+                    elseif ($row['role'] === 'editor') echo 'bg-yellow-100 text-yellow-800';
+                    else echo 'bg-gray-100 text-gray-800';
                     ?>">
                     <?= htmlspecialchars($row['role']) ?>
                   </span>
@@ -95,35 +95,26 @@ include __DIR__ . '/_sidebar_admin.php';
                   <?php if ($row['id'] != $current_user_id): ?>
 
                     <!-- form simpan dan update dan delete -->
-                  <div class="flex items-center gap-3">
-                    <!-- form update role -->
-                    <form method="post" action="/pert6-web-blog/app/process_update_role.php" class="flex items-center gap-3">
-                      <input type="hidden" name="user_id" value="<?= $row['id'] ?>">
-                      <input type="hidden" name="csrf" value="<?= $csrf_token ?>">
+                    <div class="flex items-center gap-3">
+                      <!-- form update role -->
+                      <form method="post" action="/pert6-web-blog/app/process_update_role.php" class="flex items-center gap-3">
+                        <input type="hidden" name="user_id" value="<?= $row['id'] ?>">
+                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>">
 
-                      <label class="sr-only">Pilih role</label>
-                      <select name="role" required class="block w-36 rounded-md border border-gray-400 bg-white py-1.5 pl-3 pr-8 text-sm focus:ring-0 focus:border-indigo-500">
-                        <?php foreach ($roles as $r): ?>
-                          <option value="<?= $r ?>" <?= $r === $row['role'] ? 'selected' : '' ?>><?= ucfirst($r) ?></option>
-                        <?php endforeach; ?>
-                      </select>
+                        <label class="sr-only">Pilih role</label>
+                        <select name="role" required class="block w-36 rounded-md border border-gray-400 bg-white py-1.5 pl-3 pr-8 text-sm focus:ring-0 focus:border-indigo-500">
+                          <?php foreach ($roles as $r): ?>
+                            <option value="<?= $r ?>" <?= $r === $row['role'] ? 'selected' : '' ?>><?= ucfirst($r) ?></option>
+                          <?php endforeach; ?>
+                        </select>
 
-                      <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
-                        Simpan
-                      </button>
-                    </form>
+                        <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700">
+                          Simpan
+                        </button>
+                      </form>
 
-                    <!-- form delete user -->
-                    <form method="post" action="/pert6-web-blog/app/process_delete_user.php" class="inline">
-                      <input type="hidden" name="user_id" value="<?= $row['id'] ?>">
-                      <input type="hidden" name="csrf" value="<?= $csrf_token ?>">
-                      <button type="submit"
-                        onclick="return confirm('Hapus user <?= addslashes(htmlspecialchars($row['name'])) ?> (<?= addslashes(htmlspecialchars($row['email'])) ?>)? Data tidak bisa dikembalikan.');"
-                        class="inline-flex items-center px-3 py-1.5 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700">
-                        Hapus
-                      </button>
-                    </form>
-                  </div>
+                      <!-- Delete user action removed as requested -->
+                    </div>
                     <!-- end form -->
                   <?php else: ?>
                     <div class="text-sm text-gray-500 italic">(Ini kamu)</div>

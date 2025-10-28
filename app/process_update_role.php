@@ -61,15 +61,6 @@ $stmt->close();
 // di update ke role user yang baru
 if ($ok) {
     $admin_id = (int)current_user_id();
-    $log = $conn->prepare("
-        INSERT INTO role_changes (admin_id, user_id, old_role, new_role, changed_at)
-        VALUES (?, ?, ?, ?, NOW())
-    ");
-    if ($log) {
-        $log->bind_param('iiss', $admin_id, $user_id, $old_role, $new_role);
-        $log->execute();
-        $log->close();
-    }
 
     // alert message atau status message
     // axios

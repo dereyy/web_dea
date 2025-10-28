@@ -39,17 +39,12 @@ $stmt->close();
   <!-- pilihan sidebar -->
   <nav class="px-4 py-6 space-y-2">
     <a href="users_dashboard.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= basename($_SERVER['PHP_SELF']) === 'users_dashboard' ? 'bg-indigo-50 font-semibold' : '' ?>">Dashboard</a>
+    <a href="portofolio/index.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= (strpos($_SERVER['REQUEST_URI'], 'portofolio') !== false) ? 'bg-indigo-50 font-semibold' : '' ?>">Portofolio</a>
     <a href="likes.php" class="block px-3 py-2 rounded hover:bg-indigo-50 <?= basename($_SERVER['PHP_SELF']) === 'likes.php' ? 'bg-indigo-50 font-semibold' : '' ?>">Disukai</a>
     <!-- link komentar dihapus karena fitur komentar dinonaktifkan -->
     <a href="../logout.php" class="block px-3 py-2 rounded hover:bg-indigo-50 text-red-600">Logout</a>
   </nav>
-  <!-- user / admin profile -->
-  <div class="p-4 border-t text-sm text-gray-600">
-    <div>Signed in as</div>
-    <!-- get session account -->
-    <div class="font-medium mt-1"><?= e($_SESSION['user_name'] ?? '') ?></div>
-    <div class="text-xs text-gray-500">Role: <?= e($_SESSION['user_role'] ?? '') ?></div>
-  </div>
+  <!-- user / admin profile block removed as requested -->
   <!-- Home atau index.php -->
   <div class="border-t p-4 text-sm text-gray-600 space-y-3">
     <a href="../index.php" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-indigo-50 text-gray-700 transition">
