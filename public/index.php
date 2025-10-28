@@ -1,28 +1,32 @@
-<?php include __DIR__ . '/_header.php'; ?>
-
 <?php
-// Dummy articles (bisa diganti dari DB nanti)
-$articles = [
-  [
-    "title" => "Belajar Dasar PHP untuk Pemula",
-    "date" => "2025-10-20",
-    "excerpt" => "Panduan lengkap untuk memulai belajar bahasa pemrograman PHP dari dasar. Cocok untuk peserta pelatihan web programming.",
-    "image" => "https://images.unsplash.com/photo-1607706189992-eae578626c86?auto=format&fit=crop&q=80&w=1170",
-  ],
-  [
-    "title" => "Apa Itu Tailwind CSS?",
-    "date" => "2025-10-18",
-    "excerpt" => "Tailwind CSS adalah utility-first framework yang membuat proses styling lebih cepat dan efisien.",
-    "image" => "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1170",
-  ],
-  [
-    "title" => "Menghubungkan PHP dengan Database MySQL",
-    "date" => "2025-10-15",
-    "excerpt" => "Tutorial langkah demi langkah cara koneksi PHP ke MySQL menggunakan mysqli dan PDO.",
-    "image" => "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&q=80&w=1170",
-  ],
-];
-$recent = array_slice($articles, 0, 3);
+include __DIR__ . '/_header.php';
+
+// ambil 3 portofolio terakhir dari database
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../app/functions.php';
+
+$recent = [];
+$dbError = null;
+// prepared statement untuk keamanan
+$sql = "SELECT p.id, p.title, p.slug, p.featured_image, p.content, p.created_at, u.name AS author
+  FROM portofolio p
+  LEFT JOIN users u ON p.author_id = u.id
+  ORDER BY p.created_at DESC
+  LIMIT 3";
+
+$stmt = mysqli_prepare($conn, $sql);
+if ($stmt === false) {
+  $dbError = mysqli_error($conn);
+} else {
+  if (mysqli_stmt_execute($stmt)) {
+    $res = mysqli_stmt_get_result($stmt);
+    $recent = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    mysqli_stmt_close($stmt);
+  } else {
+    $dbError = mysqli_stmt_error($stmt);
+    mysqli_stmt_close($stmt);
+  }
+}
 ?>
 
 <!-- HERO: Statis (mengganti carousel sesuai permintaan) -->
@@ -53,24 +57,67 @@ $recent = array_slice($articles, 0, 3);
   </div>
 
   <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-    <?php foreach ($recent as $a): ?>
-      <article class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-        <a href="#" class="block h-48">
-          <img src="<?= htmlspecialchars($a['image']) ?>" alt="<?= htmlspecialchars($a['title']) ?>" class="w-full h-full object-cover">
-        </a>
-        <div class="p-5">
-          <h3 class="text-lg font-semibold text-gray-800 hover:text-indigo-600">
-            <a href="#"><?= htmlspecialchars($a['title']) ?></a>
-          </h3>
-          <p class="text-xs text-gray-500 mt-1"><?= date('d M Y', strtotime($a['date'])) ?></p>
-          <p class="text-sm text-gray-600 mt-3 line-clamp-3"><?= htmlspecialchars($a['excerpt']) ?></p>
-          <div class="mt-4 flex items-center justify-between">
-            <a href="#" class="text-indigo-600 font-medium text-sm hover:underline">Baca Selengkapnya →</a>
-            <span class="text-xs text-gray-400">• 3 min read</span>
+    <?php if (!empty($dbError)): ?>
+      <div class="col-span-full bg-red-50 p-6 rounded-xl text-center border border-red-100">
+        <h3 class="text-lg font-medium text-red-700">Terjadi kesalahan pada database</h3>
+        <p class="mt-2 text-sm text-red-600">Silakan coba lagi nanti. Jika Anda admin, cek konfigurasi database.</p>
+        <?php if (!empty($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+          <pre class="mt-3 text-xs text-red-600 bg-white p-2 rounded overflow-auto"><?= htmlspecialchars($dbError) ?></pre>
+        <?php endif; ?>
+      </div>
+    <?php elseif (count($recent) > 0): ?>
+      <?php foreach ($recent as $a): ?>
+        <article class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+          <a href="singlepost.php?slug=<?= urlencode($a['slug']) ?>" class="block h-48">
+            <?php if (!empty($a['featured_image']) && file_exists(__DIR__ . '/' . $a['featured_image'])): ?>
+              <img src="<?= e($a['featured_image']) ?>" alt="<?= e($a['title']) ?>" class="w-full h-full object-cover">
+            <?php else: ?>
+              <?php
+              // try to extract an image from content or use placeholder
+              $imgUrl = $a['featured_image'] ?: '/image/placeholder.png';
+              ?>
+              <img src="<?= e($imgUrl) ?>" alt="<?= e($a['title']) ?>" class="w-full h-full object-cover">
+            <?php endif; ?>
+          </a>
+          <div class="p-5">
+            <h3 class="text-lg font-semibold text-gray-800 hover:text-indigo-600">
+              <a href="singlepost.php?slug=<?= urlencode($a['slug']) ?>"><?= e($a['title']) ?></a>
+            </h3>
+            <p class="text-xs text-gray-500 mt-1"><?= e(date('d M Y', strtotime($a['created_at']))) ?></p>
+            <?php
+            $excerpt = strip_tags($a['content'] ?? '');
+            $excerpt = mb_substr($excerpt, 0, 140);
+            ?>
+            <p class="text-sm text-gray-600 mt-3 line-clamp-3"><?= e($excerpt) ?><?= (mb_strlen($excerpt) >= 140 ? '...' : '') ?></p>
+            <div class="mt-4 flex items-center justify-between">
+              <a href="singlepost.php?slug=<?= urlencode($a['slug']) ?>" class="text-indigo-600 font-medium text-sm hover:underline">Baca Selengkapnya →</a>
+              <span class="text-xs text-gray-400">• 3 min read</span>
+            </div>
           </div>
-        </div>
-      </article>
-    <?php endforeach; ?>
+        </article>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <div class="col-span-full">
+        <?php if (!empty($_SESSION['user_id'])): ?>
+          <div class="bg-white p-6 rounded-xl text-center shadow border border-gray-100">
+            <h3 class="text-lg font-medium text-gray-800">Belum ada portofolio</h3>
+            <p class="mt-2 text-sm text-gray-600">Sepertinya belum ada portofolio di situs ini.</p>
+            <p class="mt-3 text-sm text-gray-600">Anda sedang masuk. Anda dapat membuat portofolio pertama Anda sekarang.</p>
+            <div class="mt-4">
+              <a href="/public/users/portofolio/create.php" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700">Buat Portofolio Baru</a>
+            </div>
+          </div>
+        <?php else: ?>
+          <div class="bg-white p-6 rounded-xl text-center shadow border border-gray-100">
+            <h3 class="text-lg font-medium text-gray-800">Tidak ada portofolio ditemukan</h3>
+            <p class="mt-2 text-sm text-gray-600">Belum ada portofolio. Silakan coba lagi nanti atau masuk untuk membuat portofolio Anda sendiri.</p>
+            <div class="mt-4">
+              <a href="login.php" class="inline-block text-indigo-600 underline">Masuk</a>
+            </div>
+          </div>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
   </div>
 </section>
 

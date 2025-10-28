@@ -193,9 +193,27 @@ include __DIR__ . '/_header.php';
       </div>
     <?php endforeach; ?>
   <?php else: ?>
-    <div class="col-span-full bg-white p-6 rounded-xl text-center shadow border border-gray-100">
-      <h3 class="text-lg font-medium text-gray-800">Tidak ada portofolio ditemukan</h3>
-      <p class="mt-2 text-sm text-gray-600">Coba ubah kata kunci pencarian atau tunggu admin menambahkan portofolio baru.</p>
+    <div class="col-span-full">
+      <?php if (!empty($_SESSION['user_id'])): ?>
+        <!-- logged-in user sees actionable guidance when DB is empty -->
+        <div class="bg-white p-6 rounded-xl text-center shadow border border-gray-100">
+          <h3 class="text-lg font-medium text-gray-800">Belum ada portofolio</h3>
+          <p class="mt-2 text-sm text-gray-600">Sepertinya belum ada portofolio di situs ini.</p>
+          <p class="mt-3 text-sm text-gray-600">Anda sedang masuk. Anda dapat membuat portofolio pertama Anda sekarang.</p>
+          <div class="mt-4">
+            <a href="/public/users/portofolio/create.php" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700">Buat Portofolio Baru</a>
+          </div>
+        </div>
+      <?php else: ?>
+        <!-- not logged in: show gentle info but keep section visible -->
+        <div class="bg-white p-6 rounded-xl text-center shadow border border-gray-100">
+          <h3 class="text-lg font-medium text-gray-800">Tidak ada portofolio ditemukan</h3>
+          <p class="mt-2 text-sm text-gray-600">Belum ada portofolio. Silakan coba lagi nanti atau masuk untuk membuat portofolio Anda sendiri.</p>
+          <div class="mt-4">
+            <a href="login.php" class="inline-block text-indigo-600 underline">Masuk</a>
+          </div>
+        </div>
+      <?php endif; ?>
     </div>
   <?php endif; ?>
 </div>
